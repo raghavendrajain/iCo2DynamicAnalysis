@@ -48,18 +48,26 @@ tAll <- t(allNew)
 tAll
 labelsOfClusters<-c("[2,3)", "[3, 4)", "[4, 5)", "[5, 6)", "[6, 7)", "[7, 8)", "[8, 9)")
 
+theClusterSize<-fit$size
+theClusterSize<-theClusterSize[clusterOrder] # ordering cluster sizes according to eco-friendliness
+totalSummary <- rbind(tAll, theClusterSize)
+
 plot.new()
 frame()
-matplot(tAll, xlim=c(1,8), ylim=c(0,1), type = c("b"), lty = 1:4, lwd = 2, pch=19, col=c("red","black", "blue","green"), 
+tAll_9 <- tAll
+matplot(tAll_9, xlim=c(1,8), ylim=c(0,1), type = c("b"), lty = 1:4, lwd = 2, pch=19, col=c("red","black", "blue","green"), 
         xaxt='n', xlab = "Time Intervals in minutes", ylab = "Probability of driving eco-friendly",
         main = "Time varying probabilites of eco-friendly driving behavior")
-legend("bottomright", lty = 1:4, lwd = 2, pch=19,  legend = c("Eco-friendly ", "Gerntle", "Normal", "Crazy"), col=c("red","black", "blue","green")) # optional legend
+#egend("bottomright",  lty = 1:4, lwd = 2, pch=19,  legend = c("Eco-friendly ", "Gerntle", "Normal", "Crazy"), col=c("red","black", "blue","green")) # optional legend
+legendString = c(paste("Eco-friendly (", theClusterSize[1], ")" ),
+                 paste("Gentle (", theClusterSize[2], ")" ),
+                 paste("Normal (", theClusterSize[3], ")" ),
+                 paste("Crazy (", theClusterSize[4], ")" )
+)
+legend("bottomright",  lty = 1:4, lwd = 2, pch=19,  legendString , col=c("red","black", "blue","green")) # optional legend
+
 axis(1, at=1:7, labels=labelsOfClusters)
 
-
-theClusterSize<-fit$size
-theClusterSize<-theClusterSize[clusterOrder]
-totalSummary <- rbind(tAll, theClusterSize)
 
 write.table(totalSummary, file = "ClusterPerformance")
 write.csv(totalSummary, file = "ClusterPerformance.csv")
